@@ -154,6 +154,8 @@ explore: echo {}
 
 explore: experian_extract_control {}
 
+explore: expoclm {}
+
 explore: home_claims {}
 
 explore: home_claims_backup {}
@@ -398,7 +400,23 @@ explore: qs_cover {
   }
 }
 
-explore: qs_drivers {}
+explore: qs_drivers {
+  join: qs_cover {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${qs_drivers.quote_id} = ${qs_cover.quote_id} ;;
+  }
+  join: qs_claims {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${qs_drivers.quote_id} = ${qs_claims.quote_id} AND ${qs_drivers.driver_id} = ${qs_claims.driver_id};;
+  }
+  join: qs_convictions {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${qs_drivers.quote_id} = ${qs_convictions.quote_id} AND ${qs_drivers.driver_id} = ${qs_convictions.driver_id} ;;
+  }
+}
 
 explore: qs_echo {}
 
